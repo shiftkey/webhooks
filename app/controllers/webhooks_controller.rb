@@ -1,4 +1,6 @@
 class WebhooksController < ApplicationController
+  protect_from_forgery with: :null_session
+
   def receive
     event = request.headers['X-GitHub-Event']
     project = params[:project]
