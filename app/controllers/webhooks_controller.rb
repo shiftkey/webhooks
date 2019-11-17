@@ -10,6 +10,14 @@ class WebhooksController < ApplicationController
     signature = request.headers['HTTP_X_HUB_SIGNATURE']
     body = request.body.read()
     verify_signature(body, signature)
+
+    case event
+    when 'pull_request'
+      logger.info "TODO: schedule job for pull request event for project '#{project}'"
+    else
+      logger.info "No handler available for event type '#{event}' and project '#{project}'"
+    end
+
     :ok
   end
 
