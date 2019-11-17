@@ -1,8 +1,8 @@
 class WebhooksController < ApplicationController
   def receive
     event = request.headers['X-GitHub-Event']
-    action = params[:action]
-    logger.info "Received event type '#{event}' for action #{action} at '#{Time.now}'"
+    project = params[:project]
+    logger.info "Received event type '#{event}' for action #{project} at '#{Time.now}'"
     :ok
   end
 
