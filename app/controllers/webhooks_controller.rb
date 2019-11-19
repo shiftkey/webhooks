@@ -11,6 +11,12 @@ class WebhooksController < ApplicationController
     body = request.body.read()
     verify_signature(body, signature)
 
+    logger.info "Got request: '#{body}'"
+
+    decoded = URI.decode_www_form(body)
+
+    logger.info "Got decoded request: '#{decoded}'"
+
     case event
     when 'pull_request'
       PullRequestJob.perform_later(body)
