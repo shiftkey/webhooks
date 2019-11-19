@@ -3,6 +3,6 @@ class PullRequestJob < ApplicationJob
 
   def perform(payload)
     obj = JSON.parse(payload)
-    logger.info "Got pull_request event with action '#{obj[:action]}'"
+    logger.info "Got pull_request event with action '#{obj.action}'"
   end
 end

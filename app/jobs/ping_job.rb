@@ -3,6 +3,6 @@ class PingJob < ApplicationJob
 
     def perform(payload)
       obj = JSON.parse(payload)
-      logger.info "Got ping event with message '#{obj[:zen]}'"
+      logger.info "Got ping event with message '#{obj.zen}'"
     end
   end
