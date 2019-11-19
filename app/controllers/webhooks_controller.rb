@@ -11,17 +11,17 @@ class WebhooksController < ApplicationController
     body = request.body.read()
     verify_signature(body, signature)
 
-    logger.info "Got request: '#{body}'"
-
     decoded = URI.decode_www_form(body)
+    json = JSON.parse(decoded)
+    payload = json[:payload]
 
-    logger.info "Got decoded request: '#{decoded}'"
+    payload_string = payload.to_s
 
     case event
     when 'pull_request'
-      PullRequestJob.perform_later(body)
+      PullRequestJob.perform_later(payload_string)
     when 'ping'
-      PingJob.perform_later(body)
+      PingJob.perform_later(payload_string)
     else
       logger.info "No handler available for event type '#{event}' and project '#{project}'"
     end
