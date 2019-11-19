@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PullRequestReviewJobTest < ActiveJob::TestCase
+class PingJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

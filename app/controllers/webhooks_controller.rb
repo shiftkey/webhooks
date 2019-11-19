@@ -13,7 +13,9 @@ class WebhooksController < ApplicationController
 
     case event
     when 'pull_request'
-      logger.info "TODO: schedule job for pull request event for project '#{project}'"
+      PullRequestJob.perform_later(body)
+    when 'ping'
+      PingJob.perform_later(body)
     else
       logger.info "No handler available for event type '#{event}' and project '#{project}'"
     end
