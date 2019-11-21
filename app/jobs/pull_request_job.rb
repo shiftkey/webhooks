@@ -36,8 +36,8 @@ class PullRequestJob < ApplicationJob
 
     Dir.mktmpdir do dir
       system("git", "clone", "--", clone_url, dir)
-      system("git", "checkout", head_sha)
-      system("git", "diff", range, "--name-only", "--" ,"_data/projects/")
+      system("git", "-C", dir, "checkout", head_sha)
+      system("git", "-C", dir, "diff", range, "--name-only", "--" ,"_data/projects/")
     end
 
   end
