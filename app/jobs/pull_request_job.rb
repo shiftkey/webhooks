@@ -33,9 +33,11 @@ class PullRequestJob < ApplicationJob
     end
 
     clone_url = head_repo['clone_url']
+    range = "#{base_sha}...#{head_sha}"
 
     Dir.mktmpdir do |dir|
       system("git", "clone", "--", clone_url, dir)
+      # TODO: handle failure when head_sha no longer exists
       system("git", "-C", dir, "checkout", head_sha)
       system("git", "-C", dir, "diff", range, "--name-only", "--" ,"_data/projects/")
     end
