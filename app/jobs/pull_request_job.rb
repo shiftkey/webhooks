@@ -34,7 +34,7 @@ class PullRequestJob < ApplicationJob
 
     clone_url = head_repo['clone_url']
 
-    Dir.mktmpdir do dir
+    Dir.mktmpdir do |dir|
       system("git", "clone", "--", clone_url, dir)
       system("git", "-C", dir, "checkout", head_sha)
       system("git", "-C", dir, "diff", range, "--name-only", "--" ,"_data/projects/")
