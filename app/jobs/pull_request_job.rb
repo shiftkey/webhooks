@@ -16,10 +16,11 @@ class PullRequestJob < ApplicationJob
     base_ref = base['ref']
     head_sha = head['sha']
 
-    repo = base['repo']
-    default_branch = repo['default_branch']
+    base_repo = base['repo']
+    head_repo = base['repo']
+    default_branch = base_repo['default_branch']
 
-    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo['full_name']}'"
+    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{base_repo['full_name']}'"
 
     unless action == 'synchronize' || action == 'opened' || action == 'reopened'
       logger.info "Pull request action #{action} is not handled. Ignoring..."
@@ -31,7 +32,13 @@ class PullRequestJob < ApplicationJob
       return
     end
 
-    logger.info "TODO: clone a repository to the temporary directory"
-    logger.info "TODO: find changes to files in diff #{base_sha}...#{head_sha}"
+    clone_url = head_repo['clone_url']
+
+    Dir.mktmpdir do dir
+      system("git", "clone", "--", clone_url, dir)
+      system("git", "checkout", head_sha)
+      system("git", "diff", range, "--name-only", "--" ,"_data/projects/")
+    end
+
   end
 end
