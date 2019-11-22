@@ -36,11 +36,22 @@ class PullRequestJob < ApplicationJob
     range = "#{base_sha}...#{head_sha}"
 
     Dir.mktmpdir do |dir|
-      system("git", "clone", "--", clone_url, dir)
+      run "git clone -- '#{clone_url}' '#{dir}'"
       # TODO: handle failure when head_sha no longer exists
-      system("git", "-C", dir, "checkout", head_sha)
-      system("git", "-C", dir, "diff", range, "--name-only", "--" ,"_data/projects/")
+      run "git -C '#{dir}' checkout #{head_sha}"
+       # TODO: handle failure because range may not be valid
+      run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
     end
 
+  end
+
+
+  def run(cmd)
+    logger.info "Running command: #{cmd}"
+    output, error, status = Open3.capture3(cmd)
+
+    logger.info "Command completed with exit code: #{status.exitstatus}"
+    logger.info "stdout: #{output}"
+    logger.info "stderr: #{error}"
   end
 end
