@@ -57,9 +57,9 @@ class PullRequestJob < ApplicationJob
         logger.info "stderr: #{result[:stderr]}"
       end
 
-      files = result[:stdout]
+      files = result[:stdout].chomp
 
-      logger.info "Got files active in PR: #{files}"
+      logger.info "Got files active in PR: '#{files}'"
     end
 
   end
