@@ -36,11 +36,30 @@ class PullRequestJob < ApplicationJob
     range = "#{base_sha}...#{head_sha}"
 
     Dir.mktmpdir do |dir|
-      run "git clone -- '#{clone_url}' '#{dir}'"
-      # TODO: handle failure when head_sha no longer exists
-      run "git -C '#{dir}' checkout #{head_sha}"
-       # TODO: handle failure because range may not be valid
-      run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
+      result = run "git clone -- '#{clone_url}' '#{dir}'"
+
+      unless result[:exit_code] == 0
+        logger.info "Unable to clone repository at #{clone_url} - check that you can access it..."
+        logger.info "stderr: #{result[:stderr]}"
+        break
+      end
+
+      result = run "git -C '#{dir}' checkout #{head_sha}"
+      unless result[:exit_code] == 0
+        logger.info "Unable to checkout commit #{head_sha} - it probably doesn't exist any more in the repository..."
+        logger.info "stderr: #{result[:stderr]}"
+        break
+      end
+
+      result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
+      unless result[:exit_code] == 0
+        logger.info "Unable to compute diff range: #{range}..."
+        logger.info "stderr: #{result[:stderr]}"
+      end
+
+      files = result[:stdout]
+
+      logger.info "Got files active in PR: #{files}"
     end
 
   end
@@ -48,10 +67,12 @@ class PullRequestJob < ApplicationJob
 
   def run(cmd)
     logger.info "Running command: #{cmd}"
-    output, error, status = Open3.capture3(cmd)
+    stdout, stderr, status = Open3.capture3(cmd)
 
-    logger.info "Command completed with exit code: #{status.exitstatus}"
-    logger.info "stdout: #{output}"
-    logger.info "stderr: #{error}"
+    {
+      stdout: stdout,
+      stderr: stderr,
+      exit_code: status.exitstatus,
+    }
   end
 end
