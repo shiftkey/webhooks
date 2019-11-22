@@ -57,13 +57,19 @@ class PullRequestJob < ApplicationJob
         logger.info "stderr: #{result[:stderr]}"
       end
 
-      files = result[:stdout].chomp
+      raw_files = result[:stdout].split("\n")
 
-      logger.info "Got files active in PR: '#{files}'"
+      files = raw_files.map(&:chomp)
+
+      if files.empty?
+        logger.info "No project files have been included in this PR..."
+        break
+      end
+
+      logger.info "Found files in this PR to process: '#{files}'"
     end
 
   end
-
 
   def run(cmd)
     logger.info "Running command: #{cmd}"
