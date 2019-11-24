@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PullRequestJob < ApplicationJob
   queue_as :default
 
