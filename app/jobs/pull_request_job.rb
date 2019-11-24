@@ -126,6 +126,26 @@ class PullRequestJob < ApplicationJob
     }
   end
 
+  def review_project(project, schemer)
+    validation_errors = ProjectValidator.validate(project, schemer)
+
+    return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
+
+    # TODO: label suggestions should be their own thing?
+
+    return { project: project, kind: 'valid' } unless project.github_project?
+
+    repository_error = repository_check(project)
+
+    return { project: project, kind: 'repository', message: repository_error } unless repository_error.nil?
+
+    label_error = label_check(project)
+
+    return { project: project, kind: 'label', message: label_error } unless label_error.nil?
+
+    { project: project, kind: 'valid' }
+  end
+
   def cleanup_old_comments(client, repo, pull_request_number)
     Object.const_set :PullRequestComments, client.parse(<<-'GRAPHQL')
       query ($owner: String!, $name: String!, $number: Int!) {
