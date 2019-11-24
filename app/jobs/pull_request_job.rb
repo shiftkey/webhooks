@@ -148,6 +148,11 @@ class PullRequestJob < ApplicationJob
     nil
   end
 
+  def find_label(project)
+    yaml = project.read_yaml
+    yaml['upforgrabs']['name']
+  end
+
   def label_check(project)
     result = GitHubRepositoryLabelActiveCheck.run(project)
 
