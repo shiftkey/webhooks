@@ -2,7 +2,7 @@
 
 require 'simplecov'
 SimpleCov.start do
-  add_filter [ '/test/', '/config/' ]
+  add_filter ['/test/', '/config/']
 end
 
 ENV['RAILS_ENV'] ||= 'test'
