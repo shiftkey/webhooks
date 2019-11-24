@@ -11,6 +11,7 @@ class WebhooksController < ApplicationController
 
     signature = request.headers['HTTP_X_HUB_SIGNATURE']
     body = request.body.read
+    logger.debug "request body: '#{body}'"
     verify_signature(body, signature)
 
     payload = params[:payload]
