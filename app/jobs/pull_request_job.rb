@@ -226,8 +226,8 @@ class PullRequestJob < ApplicationJob
   end
 
   def generate_comment_for_pull_request(projects, schemer)
-    markdown_body = "<!-- PULL REQUEST ANALYZER GITHUB ACTION -->
-    :wave: I'm a robot checking the state of this pull request to save the human reveiwers time." \
+    markdown_body = "<!-- PULL REQUEST ANALYZER GITHUB ACTION -->" \
+    ":wave: I'm a robot checking the state of this pull request to save the human reveiwers time." \
     " I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed.\n\n" \
     "As you make changes to this pull request, I'll re-run these checks.\n\n"
 
