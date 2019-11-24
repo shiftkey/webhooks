@@ -3,7 +3,7 @@
 class PingJob < ApplicationJob
   queue_as :default
 
-  def self.can_process(payload)
+  def self.can_process(_payload)
     true
   end
 
