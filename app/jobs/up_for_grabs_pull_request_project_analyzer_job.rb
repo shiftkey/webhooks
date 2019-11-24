@@ -24,7 +24,6 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
   def perform(payload)
     obj = JSON.parse(payload)
 
-    action = obj['action']
     pull_request_number = obj['number']
 
     pull_request = obj['pull_request']
@@ -33,26 +32,12 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     subject_id = pull_request['node_id']
 
     base_sha = base['sha']
-    base_ref = base['ref']
     head_sha = head['sha']
 
     base_repo = base['repo']
     head_repo = head['repo']
-    default_branch = base_repo['default_branch']
 
     repo = base_repo['full_name']
-
-    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo}'"
-
-    unless %w[synchronize opened reopened].include?(action)
-      logger.info "Pull request action #{action} is not handled. Ignoring..."
-      return
-    end
-
-    unless base_ref == default_branch
-      logger.info "Pull request targets '#{base_ref}' rather than the default branch '#{default_branch}'. Ignoring..."
-      return
-    end
 
     head_clone_url = head_repo['clone_url']
     base_clone_url = base_repo['clone_url']
