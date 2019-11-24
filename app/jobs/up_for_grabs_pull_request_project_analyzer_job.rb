@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PullRequestJob < ApplicationJob
+class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
   queue_as :default
 
   PREAMBLE_HEADER = '<!-- PULL REQUEST ANALYZER GITHUB ACTION -->'
@@ -24,7 +24,6 @@ class PullRequestJob < ApplicationJob
   def perform(payload)
     obj = JSON.parse(payload)
 
-    action = obj['action']
     pull_request_number = obj['number']
 
     pull_request = obj['pull_request']
@@ -33,26 +32,12 @@ class PullRequestJob < ApplicationJob
     subject_id = pull_request['node_id']
 
     base_sha = base['sha']
-    base_ref = base['ref']
     head_sha = head['sha']
 
     base_repo = base['repo']
     head_repo = head['repo']
-    default_branch = base_repo['default_branch']
 
     repo = base_repo['full_name']
-
-    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo}'"
-
-    unless %w[synchronize opened reopened].include?(action)
-      logger.info "Pull request action #{action} is not handled. Ignoring..."
-      return
-    end
-
-    unless base_ref == default_branch
-      logger.info "Pull request targets '#{base_ref}' rather than the default branch '#{default_branch}'. Ignoring..."
-      return
-    end
 
     head_clone_url = head_repo['clone_url']
     base_clone_url = base_repo['clone_url']
@@ -152,9 +137,9 @@ class PullRequestJob < ApplicationJob
     result = GitHubRepositoryActiveCheck.run(project)
 
     if result[:rate_limited]
-      puts 'This script is currently rate-limited by the GitHub API'
-      puts 'Marking as inconclusive to indicate that no further work will be done here'
-      exit 0
+      logger.info 'This script is currently rate-limited by the GitHub API'
+      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
+      return nil
     end
 
     return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
@@ -179,9 +164,9 @@ class PullRequestJob < ApplicationJob
     result = GitHubRepositoryLabelActiveCheck.run(project)
 
     if result[:rate_limited]
-      puts 'This script is currently rate-limited by the GitHub API'
-      puts 'Marking as inconclusive to indicate that no further work will be done here'
-      exit 0
+      logger.info 'This script is currently rate-limited by the GitHub API'
+      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
+      return nil
     end
 
     label = find_label(project)

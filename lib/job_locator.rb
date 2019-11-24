@@ -10,6 +10,6 @@ class JobLocator
   end
 
   def self.check_pull_request(payload)
-    PullRequestJob if PullRequestJob.can_process(payload)
+    UpForGrabsPullRequestProjectAnalyzerJob if UpForGrabsPullRequestProjectAnalyzerJob.can_process(payload)
   end
 end
