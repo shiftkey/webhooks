@@ -1,0 +1,88 @@
+{
+  "action": "opened",
+  "number": 1716,
+  "pull_request": {
+    "url": "https://api.github.com/repos/up-for-grabs/up-for-grabs.net/pulls/1716",
+    "number": 1715,
+    "state": "open",
+    "title": "Pull request targeting a different base branch",
+    "user": {
+      "login": "NishkarshRaj"
+    },
+    "body": "This pull request should be ignored",
+    "head": {
+      "label": "NishkarshRaj:CICD-Using-Jenkins",
+      "ref": "CICD-Using-Jenkins",
+      "sha": "177051e475058d931c9ccb8cb9f42c094bc7444e",
+      "user": {
+        "login": "NishkarshRaj"
+      },
+      "repo": {
+        "id": 211640750,
+        "node_id": "MDEwOlJlcG9zaXRvcnkyMTE2NDA3NTA=",
+        "name": "up-for-grabs.net",
+        "full_name": "NishkarshRaj/up-for-grabs.net",
+        "private": false,
+        "owner": {
+          "login": "NishkarshRaj"
+        },
+        "html_url": "https://github.com/NishkarshRaj/up-for-grabs.net",
+        "description": "Jump in!",
+        "fork": true
+      }
+    },
+    "base": {
+      "label": "up-for-grabs:some-other-branch",
+      "ref": "some-other-branch",
+      "sha": "550f8c61fac0c34491ea198263b67328be28e827",
+      "user": {
+        "login": "up-for-grabs"
+      },
+      "repo": {
+        "id": 14571443,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNDU3MTQ0Mw==",
+        "name": "up-for-grabs.net",
+        "full_name": "up-for-grabs/up-for-grabs.net",
+        "private": false,
+        "owner": {
+          "login": "up-for-grabs"
+        },
+        "html_url": "https://github.com/up-for-grabs/up-for-grabs.net",
+        "description": "Jump in!",
+        "fork": false,
+        "default_branch": "gh-pages"
+      }
+    }
+  },
+  "repository": {
+    "id": 14571443,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxNDU3MTQ0Mw==",
+    "name": "up-for-grabs.net",
+    "full_name": "up-for-grabs/up-for-grabs.net",
+    "private": false,
+    "owner": {
+      "login": "up-for-grabs"
+    },
+    "html_url": "https://github.com/up-for-grabs/up-for-grabs.net",
+    "description": "Jump in!",
+    "fork": false,
+    "default_branch": "gh-pages"
+  },
+  "organization": {
+    "login": "up-for-grabs",
+    "id": 15620132,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE1NjIwMTMy",
+    "url": "https://api.github.com/orgs/up-for-grabs",
+    "repos_url": "https://api.github.com/orgs/up-for-grabs/repos",
+    "events_url": "https://api.github.com/orgs/up-for-grabs/events",
+    "hooks_url": "https://api.github.com/orgs/up-for-grabs/hooks",
+    "issues_url": "https://api.github.com/orgs/up-for-grabs/issues",
+    "members_url": "https://api.github.com/orgs/up-for-grabs/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/up-for-grabs/public_members{/member}",
+    "avatar_url": "https://avatars2.githubusercontent.com/u/15620132?v=4",
+    "description": null
+  },
+  "sender": {
+    "login": "NishkarshRaj"
+  }
+}

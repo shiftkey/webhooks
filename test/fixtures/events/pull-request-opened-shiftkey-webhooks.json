@@ -1,0 +1,68 @@
+{
+  "action": "opened",
+  "number": 1234,
+  "pull_request": {
+    "id": 123456789,
+    "node_id": "hdsgihdgsoghdsioghdisigdhsgds",
+    "number": 1234,
+    "state": "open",
+    "locked": false,
+    "title": "A pull request opened on a different repository",
+    "user": {
+      "login": "shiftkey"
+    },
+    "body": "This should be ignored",
+    "head": {
+      "label": "did-something-else",
+      "ref": "did-something-else",
+      "sha": "177051e475058d931c9ccb8cb9f42c094bc7444e",
+      "user": {
+        "login": "shiftkey"
+      },
+      "repo": {
+        "id": 211640750,
+        "node_id": "MDEwOlJlcG9zaXRvcnkyMTE2NDA3NTA=",
+        "name": "webhooks",
+        "full_name": "shiftkey/webhooks",
+        "private": false,
+        "owner": {
+          "login": "shiftkey"
+        },
+        "html_url": "https://github.com/shiftkey/webhooks"
+      }
+    },
+    "base": {
+      "label": "master",
+      "ref": "master",
+      "sha": "550f8c61fac0c34491ea198263b67328be28e827",
+      "user": {
+        "login": "shiftkey"
+      },
+      "repo": {
+        "id": 14571443,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxNDU3MTQ0Mw==",
+        "name": "webhooks",
+        "full_name": "shiftkey/webhooks",
+        "private": false,
+        "owner": {
+          "login": "shiftkey"
+        },
+        "html_url": "https://github.com/shiftkey/webhooks"
+      }
+    }
+  },
+  "repository": {
+    "id": 14571443,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxNDU3MTQ0Mw==",
+    "name": "webhooks",
+    "full_name": "shiftkey/webhooks",
+    "private": false,
+    "owner": {
+      "login": "shiftkey"
+    },
+    "html_url": "https://github.com/shiftkey/webhooks"
+  },
+  "sender": {
+    "login": "shiftkey"
+  }
+}

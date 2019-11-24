@@ -3,6 +3,24 @@
 class PullRequestJob < ApplicationJob
   queue_as :default
 
+  PREAMBLE_HEADER = '<!-- PULL REQUEST ANALYZER GITHUB ACTION -->'
+
+  def self.can_process(payload)
+    obj = JSON.parse(payload)
+
+    action = obj['action']
+    base = obj['pull_request']['base']
+    repo = obj['repository']
+
+    return false unless %w[synchronize opened reopened].include?(action)
+
+    return false unless repo['full_name'] == 'up-for-grabs/up-for-grabs.net'
+
+    return false unless base['ref'] == base['repo']['default_branch']
+
+    true
+  end
+
   def perform(payload)
     obj = JSON.parse(payload)
 
@@ -251,11 +269,10 @@ class PullRequestJob < ApplicationJob
 
     login = 'shiftbot'
     type = 'User'
-    preamble = '<!-- PULL REQUEST ANALYZER GITHUB ACTION -->'
 
     comments.nodes.each do |node|
       author = node.author
-      match = author.login == login && author.__typename == type && node.body.include?(preamble)
+      match = author.login == login && author.__typename == type && node.body.include?(PREAMBLE_HEADER)
 
       next unless match
 
@@ -270,7 +287,7 @@ class PullRequestJob < ApplicationJob
   end
 
   def generate_comment_for_pull_request(projects, schemer)
-    markdown_body = "<!-- PULL REQUEST ANALYZER GITHUB ACTION -->\n\n" \
+    markdown_body = "#{PREAMBLE_HEADER}\n\n" \
     ":wave: I'm a robot checking the state of this pull request to save the human reveiwers time." \
     " I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed.\n\n" \
     "As you make changes to this pull request, I'll re-run these checks.\n\n"
