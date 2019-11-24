@@ -10,8 +10,6 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert_enqueued_with(job: PingJob) do
       payload = load_fixture('ping-up-for-grabs')
 
-      ENV['WEBHOOKS_SECRET_TOKEN'] = 'foo'
-
       post '/up-for-grabs/events',
            params: {
              payload: payload
@@ -29,8 +27,6 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     assert_enqueued_with(job: PullRequestJob) do
       payload = load_fixture('pull-request-opened-up-for-grabs-1715')
 
-      ENV['WEBHOOKS_SECRET_TOKEN'] = 'foo'
-
       post '/up-for-grabs/events',
            params: {
              payload: payload
@@ -46,8 +42,6 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test 'invalid pull request event is ignored' do
     payload = load_fixture('pull-request-opened-shiftkey-webhooks')
-
-    ENV['WEBHOOKS_SECRET_TOKEN'] = 'foo'
 
     post '/webhooks/events',
           params: {
