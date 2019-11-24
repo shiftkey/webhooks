@@ -17,7 +17,7 @@ class PullRequestJob < ApplicationJob
     head_sha = head['sha']
 
     base_repo = base['repo']
-    head_repo = base['repo']
+    head_repo = head['repo']
     default_branch = base_repo['default_branch']
 
     logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{base_repo['full_name']}'"
@@ -32,16 +32,28 @@ class PullRequestJob < ApplicationJob
       return
     end
 
-    clone_url = head_repo['clone_url']
+    head_clone_url = head_repo['clone_url']
+    base_clone_url = base_repo['clone_url']
+
     range = "#{base_sha}...#{head_sha}"
 
     Dir.mktmpdir do |dir|
-      result = run "git clone -- '#{clone_url}' '#{dir}'"
+      result = run "git clone -- '#{head_clone_url}' '#{dir}'"
 
       unless result[:exit_code] == 0
-        logger.info "Unable to clone repository at #{clone_url} - check that you can access it..."
+        logger.info "Unable to clone repository at #{head_clone_url} - check that you can access it..."
         logger.info "stderr: #{result[:stderr]}"
         break
+      end
+
+      if head_clone_url != base_clone_url
+        result = run "git -C '#{dir}' remote add upstream '#{base_clone_url}' -f"
+
+        unless result[:exit_code] == 0
+          logger.info "Unable to clone repository at #{base_clone_url} - check that you can access it..."
+          logger.info "stderr: #{result[:stderr]}"
+          break
+        end
       end
 
       result = run "git -C '#{dir}' checkout #{head_sha}"
