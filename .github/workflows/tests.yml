@@ -3,10 +3,10 @@ name: Rails Tests
 on:
   pull_request:
     branches:
-      - 'master'
+      - "master"
   push:
     branches:
-      - 'master'
+      - "master"
 
 jobs:
   build:
@@ -19,34 +19,32 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v1
 
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.x
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
 
-    - name: Install PostgreSQL 11 client
-      run: |
-        sudo apt-get -yqq install libpq-dev
+      - name: Install PostgreSQL 11 client
+        run: |
+          sudo apt-get -yqq install libpq-dev
 
-    - name: Build App
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        RAILS_ENV: test
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bin/rails db:setup
+      - name: Build App
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          RAILS_ENV: test
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          bin/rails db:setup
 
-    - name: Run Tests
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        RAILS_ENV: test
-      run: |
-      bundle exec rake test
-      bundle exec rake test:system
-      # or Rspec
-      # bundle exec rspec
+      - name: Run Tests
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          RAILS_ENV: test
+        run: |
+          bundle exec rake test
+          bundle exec rake test:system
