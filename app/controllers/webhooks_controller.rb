@@ -16,11 +16,10 @@ class WebhooksController < ApplicationController
 
     payload = params[:payload]
 
-    case event
-    when 'pull_request'
-      PullRequestJob.perform_later(payload)
-    when 'ping'
-      PingJob.perform_later(payload)
+    job = JobLocator.find_job_for_event(event, payload)
+
+    if job
+      job.perform_later(payload)
     else
       logger.info "No handler available for event type '#{event}' and project '#{project}'"
     end
