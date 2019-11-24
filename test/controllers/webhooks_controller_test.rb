@@ -8,16 +8,11 @@ require 'test_helper'
 class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test 'ping event is scheduled' do
     assert_enqueued_with(job: PingJob) do
-      payload = load_fixture('ping-up-for-grabs')
+      payload = load_fixture_as_www_encoded_form('ping-up-for-grabs')
 
       post '/up-for-grabs/events',
-           params: {
-             payload: payload
-           },
-           headers: {
-             'X-GitHub-Event': 'ping',
-             'HTTP_X_HUB_SIGNATURE': 'sha1=d482d75e17a3ca1dc81080b030cfc448831ccf18'
-           }
+           params: payload,
+           headers: headers('ping', payload)
 
       assert_response 204
     end
@@ -25,40 +20,44 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   test 'pull request event is scheduled' do
     assert_enqueued_with(job: PullRequestJob) do
-      payload = load_fixture('pull-request-opened-up-for-grabs-1715')
+      payload = load_fixture_as_www_encoded_form('pull-request-opened-up-for-grabs-1715')
 
       post '/up-for-grabs/events',
-           params: {
-             payload: payload
-           },
-           headers: {
-             'X-GitHub-Event': 'pull_request',
-             'HTTP_X_HUB_SIGNATURE': 'sha1=6c81a11a317fd5130b9f174113672f7f5e8e5070'
-           }
+           params: payload,
+           headers: headers('pull_request', payload)
 
       assert_response 204
     end
   end
 
   test 'invalid pull request event is ignored' do
-    payload = load_fixture('pull-request-opened-shiftkey-webhooks')
+    payload = load_fixture_as_www_encoded_form('pull-request-opened-shiftkey-webhooks')
 
     post '/webhooks/events',
-         params: {
-           payload: payload
-         },
-         headers: {
-           'X-GitHub-Event': 'pull_request',
-           'HTTP_X_HUB_SIGNATURE': 'sha1=a438da7a055b21a5338a0083e1a934dc5198c26d'
-         }
+         params: payload,
+         headers: headers('pull_request', payload)
 
     assert_response 204
     assert_no_enqueued_jobs
   end
 
-  def load_fixture(name)
+  def signature(payload)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], payload)
+  end
+
+  def load_fixture_as_www_encoded_form(name)
     parent = File.dirname(__dir__)
     full_path = Pathname.new("#{parent}/fixtures/events/#{name}.json")
-    File.read(full_path)
+    json = File.read(full_path)
+    encoded_json = URI::encode(json)
+    "payload=#{encoded_json}"
+  end
+
+  def headers(event, payload)
+    {
+      'X-GitHub-Event': event,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'HTTP_X_HUB_SIGNATURE': "sha1=#{signature(payload)}"
+    }
   end
 end
