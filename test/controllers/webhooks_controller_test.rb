@@ -2,9 +2,6 @@
 
 require 'test_helper'
 
-# TODO: how can we emulate request.body.read to compute the correct signatures?
-# TODO: compute checksums on the fly and assign to headers
-
 class WebhooksControllerTest < ActionDispatch::IntegrationTest
   test 'ping event is scheduled' do
     assert_enqueued_with(job: PingJob) do
