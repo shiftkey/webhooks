@@ -78,7 +78,7 @@ class PullRequestJob < ApplicationJob
       files = raw_files.map(&:chomp)
 
       if files.empty?
-        logger.info "No project files have been included in this PR..."
+        logger.info 'No project files have been included in this PR...'
         break
       end
 
@@ -124,7 +124,7 @@ class PullRequestJob < ApplicationJob
     {
       stdout: stdout,
       stderr: stderr,
-      exit_code: status.exitstatus,
+      exit_code: status.exitstatus
     }
   end
 
@@ -139,13 +139,21 @@ class PullRequestJob < ApplicationJob
       exit 0
     end
 
-    return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
+    if result[:reason] == 'archived'
+      return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active."
+    end
 
-    return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
+    if result[:reason] == 'missing'
+      return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    end
 
-    return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged." if result[:reason] == 'redirect'
+    if result[:reason] == 'redirect'
+      return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged."
+    end
 
-    return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
+    if result[:reason] == 'error'
+      return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}"
+    end
 
     nil
   end
@@ -193,7 +201,9 @@ class PullRequestJob < ApplicationJob
   def review_project(project, schemer)
     validation_errors = ProjectValidator.validate(project, schemer)
 
-    return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
+    if validation_errors.any?
+      return { project: project, kind: 'validation', validation_errors: validation_errors }
+    end
 
     # TODO: label suggestions should be their own thing?
 
@@ -201,11 +211,15 @@ class PullRequestJob < ApplicationJob
 
     repository_error = repository_check(project)
 
-    return { project: project, kind: 'repository', message: repository_error } unless repository_error.nil?
+    unless repository_error.nil?
+      return { project: project, kind: 'repository', message: repository_error }
+    end
 
     label_error = label_check(project)
 
-    return { project: project, kind: 'label', message: label_error } unless label_error.nil?
+    unless label_error.nil?
+      return { project: project, kind: 'label', message: label_error }
+    end
 
     { project: project, kind: 'valid' }
   end
@@ -327,5 +341,4 @@ class PullRequestJob < ApplicationJob
       logger.info "Unhandled exception occurred: #{e}"
     end
   end
-
 end

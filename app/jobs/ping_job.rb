@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class PingJob < ApplicationJob
-    queue_as :default
+  queue_as :default
 
-    def perform(payload)
-      obj = JSON.parse(payload)
-      logger.info "Got ping event with message '#{obj['zen']}'"
-    end
+  def perform(payload)
+    obj = JSON.parse(payload)
+    logger.info "Got ping event with message '#{obj['zen']}'"
+  end
   end

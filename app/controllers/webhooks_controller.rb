@@ -10,7 +10,7 @@ class WebhooksController < ApplicationController
     logger.info "Received event type '#{event}' for project '#{project}' at '#{Time.now}'"
 
     signature = request.headers['HTTP_X_HUB_SIGNATURE']
-    body = request.body.read()
+    body = request.body.read
     verify_signature(body, signature)
 
     payload = params[:payload]
@@ -29,6 +29,8 @@ class WebhooksController < ApplicationController
 
   def verify_signature(payload_body, theirs)
     signature = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], payload_body)
-    raise "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, theirs)
+    unless Rack::Utils.secure_compare(signature, theirs)
+      raise "Signatures didn't match!"
+    end
   end
 end
