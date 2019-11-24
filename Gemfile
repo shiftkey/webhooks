@@ -26,8 +26,6 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
-gem 'sidekiq'
-
 gem 'up_for_grabs_tooling', :git => 'https://github.com/up-for-grabs/tooling.git', :branch => 'master'
 
 group :development, :test do
