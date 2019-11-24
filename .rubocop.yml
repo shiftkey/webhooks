@@ -1,6 +1,6 @@
 Lint/NestedMethodDefinition:
   Exclude:
-    - "app/jobs/pull_request_job.rb"
+    - "app/jobs/up_for_grabs_pull_request_project_analyzer_job.rb"
 
 Metrics/LineLength:
   Max: 177

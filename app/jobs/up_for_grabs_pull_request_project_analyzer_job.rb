@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PullRequestJob < ApplicationJob
+class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
   queue_as :default
 
   PREAMBLE_HEADER = '<!-- PULL REQUEST ANALYZER GITHUB ACTION -->'

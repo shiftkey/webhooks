@@ -16,7 +16,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'pull request event is scheduled' do
-    assert_enqueued_with(job: PullRequestJob) do
+    assert_enqueued_with(job: UpForGrabsPullRequestProjectAnalyzerJob) do
       payload = load_fixture_as_www_encoded_form('pull-request-opened-up-for-grabs-1715')
 
       post '/up-for-grabs/events',
