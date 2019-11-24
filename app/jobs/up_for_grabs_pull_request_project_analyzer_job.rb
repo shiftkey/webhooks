@@ -137,9 +137,9 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     result = GitHubRepositoryActiveCheck.run(project)
 
     if result[:rate_limited]
-      puts 'This script is currently rate-limited by the GitHub API'
-      puts 'Marking as inconclusive to indicate that no further work will be done here'
-      exit 0
+      logger.info 'This script is currently rate-limited by the GitHub API'
+      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
+      return nil
     end
 
     return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
@@ -164,9 +164,9 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     result = GitHubRepositoryLabelActiveCheck.run(project)
 
     if result[:rate_limited]
-      puts 'This script is currently rate-limited by the GitHub API'
-      puts 'Marking as inconclusive to indicate that no further work will be done here'
-      exit 0
+      logger.info 'This script is currently rate-limited by the GitHub API'
+      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
+      return nil
     end
 
     label = find_label(project)
