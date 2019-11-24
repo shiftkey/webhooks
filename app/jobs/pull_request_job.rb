@@ -3,6 +3,22 @@
 class PullRequestJob < ApplicationJob
   queue_as :default
 
+  def self.can_process(payload)
+    obj = JSON.parse(payload)
+
+    action = obj['action']
+    base = obj['pull_request']['base']
+    repo = obj['repository']
+
+    return false unless %w[synchronize opened reopened].include?(action)
+
+    return false unless repo['full_name'] == 'up-for-grabs/up-for-grabs.net'
+
+    return false unless base['ref'] == base['repo']['default_branch']
+
+    true
+  end
+
   def perform(payload)
     obj = JSON.parse(payload)
 
