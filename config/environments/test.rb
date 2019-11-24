@@ -48,5 +48,5 @@ Rails.application.configure do
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
 
-  ENV['WEBHOOKS_SECRET_TOKEN'] = 'foo'
+  ENV['WEBHOOKS_SECRET_TOKEN'] = SecureRandom.hex 20
 end
