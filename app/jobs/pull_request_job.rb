@@ -148,6 +148,41 @@ class PullRequestJob < ApplicationJob
     nil
   end
 
+  def label_check(project)
+    result = GitHubRepositoryLabelActiveCheck.run(project)
+
+    if result[:rate_limited]
+      puts 'This script is currently rate-limited by the GitHub API'
+      puts 'Marking as inconclusive to indicate that no further work will be done here'
+      exit 0
+    end
+
+    label = find_label(project)
+
+    if result[:reason] == 'repository-missing'
+      return "I couldn't find the GitHub repository '#{project.github_owner_name_pair}' that was used in the `upforgrabs.link` value." \
+            " Please confirm this is correct or hasn't been mis-typed."
+    end
+
+    if result[:reason] == 'missing'
+      return "The `upforgrabs.name` value '#{label}' isn't in use on the project in GitHub." \
+            ' This might just be a mistake due because of copy-pasting the reference template or be mis-typed.' \
+            " Please check the list of labels at https://github.com/#{project.github_owner_name_pair}/labels and update the project file to use the correct label."
+    end
+
+    yaml = project.read_yaml
+    link = yaml['upforgrabs']['link']
+    url = result[:url]
+
+    link_needs_rewriting = link != url && link.include?('/labels/')
+
+    if link_needs_rewriting
+      return "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' does not match the specified `upforgrabs.link` value. Please update it to `#{url}`."
+    end
+
+    nil
+  end
+
   def review_project(project, schemer)
     validation_errors = ProjectValidator.validate(project, schemer)
 
