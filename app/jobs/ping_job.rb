@@ -3,6 +3,10 @@
 class PingJob < ApplicationJob
   queue_as :default
 
+  def self.can_process(_payload)
+    true
+  end
+
   def perform(payload)
     obj = JSON.parse(payload)
     logger.info "Got ping event with message '#{obj['zen']}'"

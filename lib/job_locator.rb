@@ -3,13 +3,13 @@
 class JobLocator
   def self.find_job_for_event(event, payload)
     if event == 'ping'
-      PingJob.class
+      PingJob
     elsif event == 'pull_request'
       check_pull_request(payload)
     end
   end
 
   def self.check_pull_request(payload)
-    PullRequestJob.class if PullRequestJob.can_process(payload)
+    PullRequestJob if PullRequestJob.can_process(payload)
   end
 end
