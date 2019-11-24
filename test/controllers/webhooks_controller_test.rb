@@ -44,13 +44,13 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     payload = load_fixture('pull-request-opened-shiftkey-webhooks')
 
     post '/webhooks/events',
-          params: {
-            payload: payload
-          },
-          headers: {
-            'X-GitHub-Event': 'pull_request',
-            'HTTP_X_HUB_SIGNATURE': 'sha1=a438da7a055b21a5338a0083e1a934dc5198c26d'
-          }
+         params: {
+           payload: payload
+         },
+         headers: {
+           'X-GitHub-Event': 'pull_request',
+           'HTTP_X_HUB_SIGNATURE': 'sha1=a438da7a055b21a5338a0083e1a934dc5198c26d'
+         }
 
     assert_response 204
     assert_no_enqueued_jobs
