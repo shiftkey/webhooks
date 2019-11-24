@@ -19,7 +19,7 @@ class WebhooksController < ApplicationController
       logger.info "No handler available for event type '#{event}' and project '#{project}'"
     end
 
-    :ok
+    head :no_content
   end
 
   def verify_signature
