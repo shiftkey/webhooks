@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebhooksController < ApplicationController
   protect_from_forgery with: :null_session
 
@@ -8,7 +10,7 @@ class WebhooksController < ApplicationController
     logger.info "Received event type '#{event}' for project '#{project}' at '#{Time.now}'"
 
     signature = request.headers['HTTP_X_HUB_SIGNATURE']
-    body = request.body.read()
+    body = request.body.read
     verify_signature(body, signature)
 
     payload = params[:payload]

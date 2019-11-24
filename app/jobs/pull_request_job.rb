@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PullRequestJob < ApplicationJob
   queue_as :default
 
@@ -24,7 +26,7 @@ class PullRequestJob < ApplicationJob
 
     logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo}'"
 
-    unless action == 'synchronize' || action == 'opened' || action == 'reopened'
+    unless %w[synchronize opened reopened].include?(action)
       logger.info "Pull request action #{action} is not handled. Ignoring..."
       return
     end
@@ -42,7 +44,7 @@ class PullRequestJob < ApplicationJob
     Dir.mktmpdir do |dir|
       result = run "git clone -- '#{head_clone_url}' '#{dir}'"
 
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to clone repository at #{head_clone_url} - check that you can access it..."
         logger.info "stderr: #{result[:stderr]}"
         break
@@ -51,7 +53,7 @@ class PullRequestJob < ApplicationJob
       if head_clone_url != base_clone_url
         result = run "git -C '#{dir}' remote add upstream '#{base_clone_url}' -f"
 
-        unless result[:exit_code] == 0
+        unless result[:exit_code].zero?
           logger.info "Unable to clone repository at #{base_clone_url} - check that you can access it..."
           logger.info "stderr: #{result[:stderr]}"
           break
@@ -59,14 +61,14 @@ class PullRequestJob < ApplicationJob
       end
 
       result = run "git -C '#{dir}' checkout #{head_sha}"
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to checkout commit #{head_sha} - it probably doesn't exist any more in the repository..."
         logger.info "stderr: #{result[:stderr]}"
         break
       end
 
       result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to compute diff range: #{range}..."
         logger.info "stderr: #{result[:stderr]}"
       end
@@ -76,7 +78,7 @@ class PullRequestJob < ApplicationJob
       files = raw_files.map(&:chomp)
 
       if files.empty?
-        logger.info "No project files have been included in this PR..."
+        logger.info 'No project files have been included in this PR...'
         break
       end
 
@@ -122,7 +124,7 @@ class PullRequestJob < ApplicationJob
     {
       stdout: stdout,
       stderr: stderr,
-      exit_code: status.exitstatus,
+      exit_code: status.exitstatus
     }
   end
 
@@ -141,7 +143,9 @@ class PullRequestJob < ApplicationJob
 
     return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
 
-    return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged." if result[:reason] == 'redirect'
+    if result[:reason] == 'redirect'
+      return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged."
+    end
 
     return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
@@ -325,5 +329,4 @@ class PullRequestJob < ApplicationJob
       logger.info "Unhandled exception occurred: #{e}"
     end
   end
-
 end
