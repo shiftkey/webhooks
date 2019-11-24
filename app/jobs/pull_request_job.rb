@@ -20,7 +20,9 @@ class PullRequestJob < ApplicationJob
     head_repo = head['repo']
     default_branch = base_repo['default_branch']
 
-    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{base_repo['full_name']}'"
+    repo = base_repo['full_name']
+
+    logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo}'"
 
     unless action == 'synchronize' || action == 'opened' || action == 'reopened'
       logger.info "Pull request action #{action} is not handled. Ignoring..."
@@ -93,7 +95,7 @@ class PullRequestJob < ApplicationJob
 
       client = GraphQL::Client.new(schema: schema, execute: http)
 
-      cleanup_old_comments(client, pull_request_number)
+      cleanup_old_comments(client, repo, pull_request_number)
 
       schema = Pathname.new("#{dir}/schema.json")
       schemer = JSONSchemer.schema(schema)
@@ -124,7 +126,7 @@ class PullRequestJob < ApplicationJob
     }
   end
 
-  def cleanup_old_comments(client, pull_request_number)
+  def cleanup_old_comments(client, repo, pull_request_number)
     Object.const_set :PullRequestComments, client.parse(<<-'GRAPHQL')
       query ($owner: String!, $name: String!, $number: Int!) {
         repository(owner: $owner, name: $name) {
@@ -144,7 +146,6 @@ class PullRequestJob < ApplicationJob
       }
     GRAPHQL
 
-    repo = ENV['GITHUB_REPOSITORY']
     owner, name = repo.split('/')
 
     variables = { owner: owner, name: name, number: pull_request_number }
