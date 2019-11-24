@@ -7,4 +7,4 @@ class PingJob < ApplicationJob
     obj = JSON.parse(payload)
     logger.info "Got ping event with message '#{obj['zen']}'"
   end
-  end
+end

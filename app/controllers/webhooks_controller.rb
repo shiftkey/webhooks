@@ -29,8 +29,6 @@ class WebhooksController < ApplicationController
 
   def verify_signature(payload_body, theirs)
     signature = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], payload_body)
-    unless Rack::Utils.secure_compare(signature, theirs)
-      raise "Signatures didn't match!"
-    end
+    raise "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, theirs)
   end
 end

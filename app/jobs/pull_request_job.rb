@@ -26,7 +26,7 @@ class PullRequestJob < ApplicationJob
 
     logger.info "Action '#{obj['action']}' for PR ##{pull_request_number} on repo '#{repo}'"
 
-    unless action == 'synchronize' || action == 'opened' || action == 'reopened'
+    unless %w[synchronize opened reopened].include?(action)
       logger.info "Pull request action #{action} is not handled. Ignoring..."
       return
     end
@@ -44,7 +44,7 @@ class PullRequestJob < ApplicationJob
     Dir.mktmpdir do |dir|
       result = run "git clone -- '#{head_clone_url}' '#{dir}'"
 
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to clone repository at #{head_clone_url} - check that you can access it..."
         logger.info "stderr: #{result[:stderr]}"
         break
@@ -53,7 +53,7 @@ class PullRequestJob < ApplicationJob
       if head_clone_url != base_clone_url
         result = run "git -C '#{dir}' remote add upstream '#{base_clone_url}' -f"
 
-        unless result[:exit_code] == 0
+        unless result[:exit_code].zero?
           logger.info "Unable to clone repository at #{base_clone_url} - check that you can access it..."
           logger.info "stderr: #{result[:stderr]}"
           break
@@ -61,14 +61,14 @@ class PullRequestJob < ApplicationJob
       end
 
       result = run "git -C '#{dir}' checkout #{head_sha}"
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to checkout commit #{head_sha} - it probably doesn't exist any more in the repository..."
         logger.info "stderr: #{result[:stderr]}"
         break
       end
 
       result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
-      unless result[:exit_code] == 0
+      unless result[:exit_code].zero?
         logger.info "Unable to compute diff range: #{range}..."
         logger.info "stderr: #{result[:stderr]}"
       end
@@ -139,21 +139,15 @@ class PullRequestJob < ApplicationJob
       exit 0
     end
 
-    if result[:reason] == 'archived'
-      return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active."
-    end
+    return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
 
-    if result[:reason] == 'missing'
-      return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
-    end
+    return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
 
     if result[:reason] == 'redirect'
       return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged."
     end
 
-    if result[:reason] == 'error'
-      return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}"
-    end
+    return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
     nil
   end
@@ -201,9 +195,7 @@ class PullRequestJob < ApplicationJob
   def review_project(project, schemer)
     validation_errors = ProjectValidator.validate(project, schemer)
 
-    if validation_errors.any?
-      return { project: project, kind: 'validation', validation_errors: validation_errors }
-    end
+    return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
     # TODO: label suggestions should be their own thing?
 
@@ -211,15 +203,11 @@ class PullRequestJob < ApplicationJob
 
     repository_error = repository_check(project)
 
-    unless repository_error.nil?
-      return { project: project, kind: 'repository', message: repository_error }
-    end
+    return { project: project, kind: 'repository', message: repository_error } unless repository_error.nil?
 
     label_error = label_check(project)
 
-    unless label_error.nil?
-      return { project: project, kind: 'label', message: label_error }
-    end
+    return { project: project, kind: 'label', message: label_error } unless label_error.nil?
 
     { project: project, kind: 'valid' }
   end
