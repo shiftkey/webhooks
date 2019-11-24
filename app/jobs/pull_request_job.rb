@@ -126,6 +126,28 @@ class PullRequestJob < ApplicationJob
     }
   end
 
+  def repository_check(project)
+    # TODO: this looks for GITHUB_TOKEN underneath - it should not be hard-coded like this
+    # TODO: cleanup the GITHUB_TOKEN setting once this is decoupled from the environment variable
+    result = GitHubRepositoryActiveCheck.run(project)
+
+    if result[:rate_limited]
+      puts 'This script is currently rate-limited by the GitHub API'
+      puts 'Marking as inconclusive to indicate that no further work will be done here'
+      exit 0
+    end
+
+    return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
+
+    return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
+
+    return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged." if result[:reason] == 'redirect'
+
+    return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
+
+    nil
+  end
+
   def review_project(project, schemer)
     validation_errors = ProjectValidator.validate(project, schemer)
 
