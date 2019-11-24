@@ -46,7 +46,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     parent = File.dirname(__dir__)
     full_path = Pathname.new("#{parent}/fixtures/events/#{name}.json")
     json = File.read(full_path)
-    URI.encode_www_form([[ 'payload', json ]])
+    URI.encode_www_form([['payload', json]])
   end
 
   def headers(event, payload)
