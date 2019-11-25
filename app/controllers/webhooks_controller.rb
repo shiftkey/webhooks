@@ -7,6 +7,8 @@ class WebhooksController < ApplicationController
     event = request.headers['X-GitHub-Event']
     project = params[:project]
 
+    logger.info "Received event '#{event}' for project '#{project}'"
+
     verify_signature
 
     payload = params[:payload]
