@@ -11,7 +11,9 @@ class WebhooksController < ApplicationController
 
     verify_signature
 
-    job = JobLocator.find_job_for_event(event, params[:payload])
+    payload = params[:payload]
+
+    job = JobLocator.find_job_for_event(event, payload)
 
     if job
       job.perform_later(payload)
