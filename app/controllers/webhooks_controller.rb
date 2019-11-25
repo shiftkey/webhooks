@@ -7,11 +7,11 @@ class WebhooksController < ApplicationController
     event = request.headers['X-GitHub-Event']
     project = params[:project]
 
+    logger.info "Received event '#{event}' for project '#{project}'"
+
     verify_signature
 
-    payload = params[:payload]
-
-    job = JobLocator.find_job_for_event(event, payload)
+    job = JobLocator.find_job_for_event(event, params[:payload])
 
     if job
       job.perform_later(payload)
