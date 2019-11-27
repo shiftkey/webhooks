@@ -196,11 +196,13 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
   end
 
   def review_project(project, schemer)
-    validation_errors = ProjectValidator.validate(project, schemer)
+    validation_errors = SchemaValidator.validate(project, schemer)
 
     return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
-    # TODO: label suggestions should be their own thing?
+    tags_errors = TagsValidator.validate(project)
+
+    return { project: project, kind: 'tags', tags_errors: tags_errors } if tags_errors.any?
 
     return { project: project, kind: 'valid' } unless project.github_project?
 
@@ -285,6 +287,9 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
       elsif result[:kind] == 'validation'
         message = result[:validation_errors].map { |e| "> - #{e}" }.join "\n"
         "#### `#{path}` :x:\nI had some troubles parsing the project file, or there were fields that are missing that I need.\n\nHere's the details:\n#{message}"
+      elsif result[:kind] == 'tags'
+        message = result[:tags_errors].map { |e| "> - #{e}" }.join "\n"
+        "#### `#{path}` :x:\nI have some suggestions about the tags used in the project:\n\n#{message}"
       elsif result[:kind] == 'repository' || result[:kind] == 'label'
         "#### `#{path}` :x:\n#{result[:message]}"
       else
