@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: ae63ed72e436e8ff3dfec71672b7f68d4964e9aa
+  revision: d9d4e21b48941ade07f4217a48a5346c1122dbd4
   branch: master
   specs:
     up_for_grabs_tooling (0.0.4)
@@ -90,12 +90,12 @@ GEM
     ecma-re-validator (0.2.0)
       regexp_parser (~> 1.2)
     erubi (1.9.0)
-    faraday (0.17.0)
+    faraday (0.17.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    graphql (1.9.15)
+    graphql (1.9.16)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
@@ -247,7 +247,7 @@ GEM
     websocket-extensions (0.1.4)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.2.1)
+    zeitwerk (2.2.2)
 
 PLATFORMS
   ruby
