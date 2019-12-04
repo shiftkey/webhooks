@@ -1,4 +1,12 @@
 {
+    "ruby.useLanguageServer": true,
+    "ruby.lint": {
+        "rubocop": {
+            "command": "bundle exec rubocop"
+        },
+        "ruby": true
+    },
+    "ruby.format": "rubocop",
     "files.exclude": {
         "coverage": true,
         "node_modules": true,
