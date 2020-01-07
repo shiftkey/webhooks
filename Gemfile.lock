@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: d9d4e21b48941ade07f4217a48a5346c1122dbd4
+  revision: 101818f14e7ef4a195a8d7181f6bbc54ea848149
   branch: master
   specs:
     up_for_grabs_tooling (0.0.4)
@@ -90,12 +90,12 @@ GEM
     ecma-re-validator (0.2.0)
       regexp_parser (~> 1.2)
     erubi (1.9.0)
-    faraday (0.17.1)
+    faraday (1.0.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.3)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    graphql (1.9.16)
+    graphql (1.9.17)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
@@ -131,13 +131,14 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
-    octokit (4.14.0)
+    octokit (4.15.0)
+      faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.1)
     parser (2.7.0.1)
       ast (~> 2.4.0)
     pg (1.2.1)
-    public_suffix (4.0.2)
+    public_suffix (4.0.3)
     puma (4.3.1)
       nio4r (~> 2.0)
     rack (2.0.8)
@@ -225,7 +226,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
     uri_template (0.7.0)
