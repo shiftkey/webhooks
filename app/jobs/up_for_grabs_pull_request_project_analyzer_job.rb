@@ -102,9 +102,6 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
       cleanup_old_comments(client, repo, pull_request_number)
 
-      schema = Pathname.new("#{dir}/schema.json")
-      schemer = JSONSchemer.schema(schema)
-
       projects = files.map do |f|
         full_path = File.join(dir, f)
         return nil unless File.exist?(full_path)
@@ -112,7 +109,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
         Project.new(f, full_path)
       end
 
-      markdown_body = generate_comment_for_pull_request(projects, schemer)
+      markdown_body = generate_comment_for_pull_request(projects)
 
       logger.info "Comment to submit: #{markdown_body}"
 
@@ -195,8 +192,8 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     nil
   end
 
-  def review_project(project, schemer)
-    validation_errors = SchemaValidator.validate(project, schemer)
+  def review_project(project)
+    validation_errors = SchemaValidator.validate(project)
 
     return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
@@ -273,13 +270,13 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     end
   end
 
-  def generate_comment_for_pull_request(projects, schemer)
+  def generate_comment_for_pull_request(projects)
     markdown_body = "#{PREAMBLE_HEADER}\n\n" \
     ":wave: I'm a robot checking the state of this pull request to save the human reveiwers time." \
     " I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed.\n\n" \
     "As you make changes to this pull request, I'll re-run these checks.\n\n"
 
-    messages = projects.compact.map { |p| review_project(p, schemer) }.map do |result|
+    messages = projects.compact.map { |p| review_project(p) }.map do |result|
       path = result[:project].relative_path
 
       if result[:kind] == 'valid'
