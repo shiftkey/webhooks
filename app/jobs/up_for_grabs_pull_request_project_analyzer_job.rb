@@ -70,7 +70,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
         break
       end
 
-      result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
+      result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/*.yml"
       unless result[:exit_code].zero?
         logger.info "Unable to compute diff range: #{range}..."
         logger.info "stderr: #{result[:stderr]}"
