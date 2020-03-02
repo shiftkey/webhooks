@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: 9713aaffb5a0e39816a84b98d6d3e26beeb9ad78
+  revision: 9fdf0a1d8aee83eeabfd3db11b367ddcba075c91
   branch: master
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -105,7 +105,7 @@ GEM
     jaro_winkler (1.5.4)
     jbuilder (2.10.0)
       activesupport (>= 5.0.0)
-    json_schemer (0.2.9)
+    json_schemer (0.2.10)
       ecma-re-validator (~> 0.2)
       hana (~> 1.3)
       regexp_parser (~> 1.5)
