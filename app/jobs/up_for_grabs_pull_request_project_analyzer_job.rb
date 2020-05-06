@@ -100,16 +100,10 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
       client = GraphQL::Client.new(schema: schema, execute: http)
 
-      cleanup_old_comments(client, repo, pull_request_number)
+      comment_deleted = cleanup_old_comments(client, repo, pull_request_number)
 
-      projects = files.map do |f|
-        full_path = File.join(dir, f)
-        return nil unless File.exist?(full_path)
-
-        Project.new(f, full_path)
-      end
-
-      markdown_body = generate_comment_for_pull_request(projects)
+      # TODO: confirm we're passing in the right parameters
+      markdown_body = PullRequestValidator.generate_comment(dir, files, initial_message: !comment_deleted)
 
       logger.info "Comment to submit: #{markdown_body}"
 
@@ -126,92 +120,6 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
       stderr: stderr,
       exit_code: status.exitstatus
     }
-  end
-
-  def repository_check(project)
-    # TODO: this looks for GITHUB_TOKEN underneath - it should not be hard-coded like this
-    # TODO: cleanup the GITHUB_TOKEN setting once this is decoupled from the environment variable
-    result = GitHubRepositoryActiveCheck.run(project)
-
-    if result[:rate_limited]
-      logger.info 'This script is currently rate-limited by the GitHub API'
-      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
-      return nil
-    end
-
-    return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
-
-    return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
-
-    if result[:reason] == 'redirect'
-      return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged."
-    end
-
-    return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
-
-    nil
-  end
-
-  def find_label(project)
-    yaml = project.read_yaml
-    yaml['upforgrabs']['name']
-  end
-
-  def label_check(project)
-    result = GitHubRepositoryLabelActiveCheck.run(project)
-
-    if result[:rate_limited]
-      logger.info 'This script is currently rate-limited by the GitHub API'
-      logger.info 'Marking as inconclusive to indicate that no further work will be done here'
-      return nil
-    end
-
-    label = find_label(project)
-
-    if result[:reason] == 'repository-missing'
-      return "I couldn't find the GitHub repository '#{project.github_owner_name_pair}' that was used in the `upforgrabs.link` value." \
-            " Please confirm this is correct or hasn't been mis-typed."
-    end
-
-    if result[:reason] == 'missing'
-      return "The `upforgrabs.name` value '#{label}' isn't in use on the project in GitHub." \
-            ' This might just be a mistake due because of copy-pasting the reference template or be mis-typed.' \
-            " Please check the list of labels at https://github.com/#{project.github_owner_name_pair}/labels and update the project file to use the correct label."
-    end
-
-    yaml = project.read_yaml
-    link = yaml['upforgrabs']['link']
-    url = result[:url]
-
-    link_needs_rewriting = link != url && link.include?('/labels/')
-
-    if link_needs_rewriting
-      return "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' does not match the specified `upforgrabs.link` value. Please update it to `#{url}`."
-    end
-
-    nil
-  end
-
-  def review_project(project)
-    validation_errors = SchemaValidator.validate(project)
-
-    return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
-
-    tags_errors = TagsValidator.validate(project)
-
-    return { project: project, kind: 'tags', tags_errors: tags_errors } if tags_errors.any?
-
-    return { project: project, kind: 'valid' } unless project.github_project?
-
-    repository_error = repository_check(project)
-
-    return { project: project, kind: 'repository', message: repository_error } unless repository_error.nil?
-
-    label_error = label_check(project)
-
-    return { project: project, kind: 'label', message: label_error } unless label_error.nil?
-
-    { project: project, kind: 'valid' }
   end
 
   def cleanup_old_comments(client, repo, pull_request_number)
@@ -243,7 +151,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     pull_request = response.data.repository.pull_request
     comments = pull_request.comments
 
-    return unless comments.nodes.any?
+    return false unless comments.nodes.any?
 
     Object.const_set :DeleteIssueComment, client.parse(<<-'GRAPHQL')
       mutation ($input: DeleteIssueCommentInput!) {
@@ -268,33 +176,8 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
         logger.info "Message when deleting commit failed: #{message}"
       end
     end
-  end
 
-  def generate_comment_for_pull_request(projects)
-    markdown_body = "#{PREAMBLE_HEADER}\n\n" \
-    ":wave: I'm a robot checking the state of this pull request to save the human reveiwers time." \
-    " I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed.\n\n" \
-    "As you make changes to this pull request, I'll re-run these checks.\n\n"
-
-    messages = projects.compact.map { |p| review_project(p) }.map do |result|
-      path = result[:project].relative_path
-
-      if result[:kind] == 'valid'
-        "#### `#{path}` :white_check_mark: \nNo problems found, everything should be good to merge!"
-      elsif result[:kind] == 'validation'
-        message = result[:validation_errors].map { |e| "> - #{e}" }.join "\n"
-        "#### `#{path}` :x:\nI had some troubles parsing the project file, or there were fields that are missing that I need.\n\nHere's the details:\n#{message}"
-      elsif result[:kind] == 'tags'
-        message = result[:tags_errors].map { |e| "> - #{e}" }.join "\n"
-        "#### `#{path}` :x:\nI have some suggestions about the tags used in the project:\n\n#{message}"
-      elsif result[:kind] == 'repository' || result[:kind] == 'label'
-        "#### `#{path}` :x:\n#{result[:message]}"
-      else
-        "#### `#{path}` :question:\nI got a result of type '#{result[:kind]}' that I don't know how to handle. I need to mention @shiftkey here as he might be able to fix it."
-      end
-    end
-
-    markdown_body + messages.join("\n\n")
+    true
   end
 
   def add_comment_to_pull_request(client, subject_id, markdown_body)
