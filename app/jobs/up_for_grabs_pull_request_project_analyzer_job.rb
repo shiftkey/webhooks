@@ -102,7 +102,6 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
       comment_deleted = cleanup_old_comments(client, repo, pull_request_number)
 
-      # TODO: confirm we're passing in the right parameters
       markdown_body = PullRequestValidator.generate_comment(dir, files, initial_message: !comment_deleted)
 
       logger.info "Comment to submit: #{markdown_body}"
