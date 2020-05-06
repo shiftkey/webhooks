@@ -87,18 +87,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
       logger.info "Found files in this PR to process: '#{files}'"
 
-      http = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
-        def headers(_context)
-          {
-            "User-Agent": 'up-for-grabs-graphql-label-queries',
-            "Authorization": "bearer #{ENV['SHIFTBOT_GITHUB_TOKEN']}"
-          }
-        end
-      end
-
-      schema = GraphQL::Client.load_schema(http)
-
-      client = GraphQL::Client.new(schema: schema, execute: http)
+      client = create_client
 
       comment_deleted = cleanup_old_comments(client, repo, pull_request_number)
 
@@ -108,6 +97,21 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
       add_comment_to_pull_request(client, subject_id, markdown_body)
     end
+  end
+
+  def create_client
+    http = GraphQL::Client::HTTP.new('https://api.github.com/graphql') do
+      def headers(_context)
+        {
+          "User-Agent": 'up-for-grabs-graphql-label-queries',
+          "Authorization": "bearer #{ENV['SHIFTBOT_GITHUB_TOKEN']}"
+        }
+      end
+    end
+
+    schema = GraphQL::Client.load_schema(http)
+
+    GraphQL::Client.new(schema: schema, execute: http)
   end
 
   def run(cmd)
