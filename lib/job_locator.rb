@@ -2,9 +2,10 @@
 
 class JobLocator
   def self.find_job_for_event(event, payload)
-    if event == 'ping'
+    case event
+    when 'ping'
       PingJob
-    elsif event == 'pull_request'
+    when 'pull_request'
       check_pull_request(payload)
     end
   end
