@@ -29,7 +29,7 @@ class WebhooksController < ApplicationController
     body = request.body.read
     raise 'Unable to verify signature of received payload' unless ENV['WEBHOOKS_SECRET_TOKEN']
 
-    ours = 'sha1=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], body)
+    ours = "sha1=#{OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], body)}"
     raise "Signatures didn't match!" unless Rack::Utils.secure_compare(theirs, ours)
   end
 end
