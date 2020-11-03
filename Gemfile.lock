@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: b92c1912fb1a2c3667ba0f7f5d8d1243e28d052a
+  revision: d97700ecf0a4ffe58e261fa26cad6a4006ac798c
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -90,12 +90,13 @@ GEM
     ecma-re-validator (0.2.1)
       regexp_parser (~> 1.2)
     erubi (1.9.0)
-    faraday (1.0.1)
+    faraday (1.1.0)
       multipart-post (>= 1.2, < 3)
+      ruby2_keywords
     ffi (1.12.2)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    graphql (1.11.5)
+    graphql (1.11.6)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
@@ -130,7 +131,7 @@ GEM
     nio4r (2.5.4)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    octokit (4.18.0)
+    octokit (4.19.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.2)
@@ -190,6 +191,7 @@ GEM
     rubocop-ast (1.1.0)
       parser (>= 2.7.1.5)
     ruby-progressbar (1.10.1)
+    ruby2_keywords (0.0.2)
     rubyzip (2.3.0)
     safe_yaml (1.0.5)
     sass-rails (6.0.0)
@@ -253,7 +255,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.4.0)
+    zeitwerk (2.4.1)
 
 PLATFORMS
   ruby
