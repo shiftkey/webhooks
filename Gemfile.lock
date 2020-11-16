@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: d97700ecf0a4ffe58e261fa26cad6a4006ac798c
+  revision: 29d6973b58053c825363c73102ac934311cc0f60
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -232,7 +232,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.7)
+    tzinfo (1.2.8)
       thread_safe (~> 0.1)
     unicode-display_width (1.7.0)
     uri_template (0.7.0)
