@@ -55,3 +55,7 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: true
+
+Rails/RefuteMethods:
+  Exclude:
+    - "test/lib/job_locator_test.rb"
