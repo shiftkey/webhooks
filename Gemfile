@@ -33,6 +33,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'up_for_grabs_tooling', git: 'https://github.com/up-for-grabs/tooling.git', branch: 'main'
 
 gem 'rubocop', require: false
+gem 'rubocop-rails', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
