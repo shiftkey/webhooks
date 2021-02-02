@@ -53,7 +53,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
     {
       'X-GitHub-Event': event,
       'Content-Type': 'application/x-www-form-urlencoded',
-      'HTTP_X_HUB_SIGNATURE': "sha1=#{signature(payload)}"
+      HTTP_X_HUB_SIGNATURE: "sha1=#{signature(payload)}"
     }
   end
 end

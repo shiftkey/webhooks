@@ -8,12 +8,12 @@ class JobLocatorTest < MiniTest::Test
   end
 
   def test_ping_event_returns_job
-    refute_nil JobLocator.find_job_for_event('ping', '{}')
+    assert_not_nil JobLocator.find_job_for_event('ping', '{}')
   end
 
   def test_pull_request_open_for_targeted_repository_returns_job
     payload = load_fixture('pull-request-opened-up-for-grabs-1715')
-    refute_nil JobLocator.find_job_for_event('pull_request', payload)
+    assert_not_nil JobLocator.find_job_for_event('pull_request', payload)
   end
 
   def test_pull_request_open_for_different_repository_returns_nil

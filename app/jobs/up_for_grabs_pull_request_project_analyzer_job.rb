@@ -104,7 +104,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
       def headers(_context)
         {
           "User-Agent": 'up-for-grabs-graphql-label-queries',
-          "Authorization": "bearer #{ENV['SHIFTBOT_GITHUB_TOKEN']}"
+          Authorization: "bearer #{ENV['SHIFTBOT_GITHUB_TOKEN']}"
         }
       end
     end

@@ -2,7 +2,7 @@
 
 class WelcomeController < ApplicationController
   def index
-    logger.info "The current time is '#{Time.now}'"
+    logger.info "The current time is '#{Time.current}'"
     render 'index'
   end
 end
