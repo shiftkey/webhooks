@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: de4287907544a8071215be11c25024674b93ab4b
+  revision: 06b496d98d74b76928e10b5c7a4333576af75389
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -111,7 +111,7 @@ GEM
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
-    json_schemer (0.2.17)
+    json_schemer (0.2.18)
       ecma-re-validator (~> 0.3)
       hana (~> 1.3)
       regexp_parser (~> 2.0)
@@ -130,7 +130,7 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.14.4)
     mocha (1.12.0)
     msgpack (1.4.2)
     multipart-post (2.1.1)
@@ -185,7 +185,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    regexp_parser (2.0.3)
+    regexp_parser (2.1.1)
     rexml (3.2.4)
     rubocop (1.10.0)
       parallel (~> 1.10)
