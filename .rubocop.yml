@@ -59,3 +59,6 @@ Style/HashTransformValues:
 Rails/RefuteMethods:
   Exclude:
     - "test/lib/job_locator_test.rb"
+
+Rails/EnvironmentVariableAccess:
+   AllowReads: true
