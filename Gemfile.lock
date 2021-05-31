@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: 75dfc3f6ee84f83381e90ee294ed3c341d26139a
+  revision: 05b406cde2e3a903ecdd11809d9e1a5996c92600
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -94,19 +94,23 @@ GEM
     ecma-re-validator (0.3.0)
       regexp_parser (~> 2.0)
     erubi (1.10.0)
-    faraday (1.4.1)
+    faraday (1.4.2)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
       faraday-net_http_persistent (~> 1.1)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
     faraday-net_http (1.0.1)
     faraday-net_http_persistent (1.1.0)
     ffi (1.15.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    graphql (1.12.8)
+    graphql (1.12.12)
     graphql-client (0.16.0)
       activesupport (>= 3.0)
       graphql (~> 1.8)
