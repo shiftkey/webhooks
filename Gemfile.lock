@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: c39bf7493db5e7334192a89b9fa4ca98f512e158
+  revision: 89c15397768a919872b21cf7c284dc4d0e307519
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
