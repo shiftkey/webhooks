@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: b8a33e61aef6cdd30f6681ddab08ce9abd43b3a8
+  revision: f06f2c669426b6e6ad4b9c453a88dd03a408ceb9
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -213,7 +213,7 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
     ruby-progressbar (1.11.0)
-    ruby2_keywords (0.0.4)
+    ruby2_keywords (0.0.5)
     rubyzip (2.3.0)
     safe_yaml (1.0.5)
     sass-rails (6.0.0)
