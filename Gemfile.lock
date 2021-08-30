@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: 66e8fa18529118189acd232ee86830d59cdf3a47
+  revision: 64c7b8bec5f3d1f47ed3f6fdca038e98a85a0c66
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -94,7 +94,7 @@ GEM
     ecma-re-validator (0.3.0)
       regexp_parser (~> 2.0)
     erubi (1.10.0)
-    faraday (1.7.0)
+    faraday (1.7.1)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
