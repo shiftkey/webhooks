@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: 64c7b8bec5f3d1f47ed3f6fdca038e98a85a0c66
+  revision: cc2e6010ba3e6d3e2ab4e110440f31f6f90a4e7f
   branch: main
   specs:
     up_for_grabs_tooling (0.0.6)
@@ -94,7 +94,7 @@ GEM
     ecma-re-validator (0.3.0)
       regexp_parser (~> 2.0)
     erubi (1.10.0)
-    faraday (1.7.1)
+    faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -116,10 +116,10 @@ GEM
     ffi (1.15.3)
     globalid (0.5.2)
       activesupport (>= 5.0)
-    graphql (1.12.15)
-    graphql-client (0.16.0)
+    graphql (1.12.16)
+    graphql-client (0.17.0)
       activesupport (>= 3.0)
-      graphql (~> 1.8)
+      graphql (~> 1.10)
     hana (1.3.7)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
