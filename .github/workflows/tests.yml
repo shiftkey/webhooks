@@ -39,6 +39,7 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
           bin/rails db:setup
+          bin/rails assets:precompile
 
       - name: Run Tests
         env:
