@@ -25,6 +25,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.0'
+          bundler-cache: true
 
       - name: Install PostgreSQL 11 client
         run: |
@@ -36,8 +37,6 @@ jobs:
           PGUSER: postgres
           RAILS_ENV: test
         run: |
-          gem install bundler
-          bundle install --jobs 4 --retry 3
           bin/rails db:setup
           bin/rails assets:precompile
 
