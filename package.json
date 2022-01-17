@@ -2,7 +2,7 @@
   "name": "webhooks",
   "private": true,
   "dependencies": {
-    "@rails/actioncable": "^7.0.0",
+    "@rails/actioncable": "^7.0.1",
     "@rails/activestorage": "^7.0.0",
     "@rails/ujs": "^7.0.1",
     "turbolinks": "^5.2.0"
