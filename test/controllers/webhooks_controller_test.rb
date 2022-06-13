@@ -39,7 +39,10 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   def signature(payload)
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), ENV['WEBHOOKS_SECRET_TOKEN'], payload)
+    token = ENV.fetch('WEBHOOKS_SECRET_TOKEN', nil)
+    flunk 'environment variable WEBHOOKS_SECRET_TOKEN not found' unless token
+
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), token, payload)
   end
 
   def load_fixture_as_www_encoded_form(name)
