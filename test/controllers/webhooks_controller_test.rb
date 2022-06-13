@@ -40,7 +40,7 @@ class WebhooksControllerTest < ActionDispatch::IntegrationTest
 
   def signature(payload)
     token = ENV.fetch('WEBHOOKS_SECRET_TOKEN', nil)
-    flunk "environment variable WEBHOOKS_SECRET_TOKEN not found" unless token
+    flunk 'environment variable WEBHOOKS_SECRET_TOKEN not found' unless token
     
     OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), token, payload)
   end
