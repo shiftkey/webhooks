@@ -113,7 +113,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
     schema = GraphQL::Client.load_schema(http)
 
-    GraphQL::Client.new(schema: schema, execute: http)
+    GraphQL::Client.new(schema:, execute: http)
   end
 
   def run(cmd)
@@ -121,8 +121,8 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     stdout, stderr, status = Open3.capture3(cmd)
 
     {
-      stdout: stdout,
-      stderr: stderr,
+      stdout:,
+      stderr:,
       exit_code: status.exitstatus
     }
   end
@@ -149,9 +149,9 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
 
     owner, name = repo.split('/')
 
-    variables = { owner: owner, name: name, number: pull_request_number }
+    variables = { owner:, name:, number: pull_request_number }
 
-    response = client.query(PullRequestComments, variables: variables)
+    response = client.query(PullRequestComments, variables:)
 
     pull_request = response.data.repository.pull_request
     comments = pull_request.comments
@@ -174,7 +174,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
       next unless match
 
       variables = { input: { id: node.id } }
-      response = client.query(DeleteIssueComment, variables: variables)
+      response = client.query(DeleteIssueComment, variables:)
 
       if response.errors.any?
         message = response.errors[:data].join(', ')
@@ -201,7 +201,7 @@ class UpForGrabsPullRequestProjectAnalyzerJob < ApplicationJob
     variables = { input: { body: markdown_body, subjectId: subject_id } }
 
     begin
-      response = client.query(AddCommentToPullRequest, variables: variables)
+      response = client.query(AddCommentToPullRequest, variables:)
 
       if (data = response.data)
         if data.add_comment?
