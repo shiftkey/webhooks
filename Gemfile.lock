@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: 6dc9e2137fc7aaf88bb77b5dddd888dae73e23ef
+  revision: d933ac38f17f5b2cf2d55d3f7ab44d9eb6802755
   branch: main
   specs:
     up_for_grabs_tooling (0.1.0)
@@ -108,7 +108,7 @@ GEM
     ffi (1.15.5)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    graphql (2.0.16)
+    graphql (2.0.17)
     graphql-client (0.18.0)
       activesupport (>= 3.0)
       graphql
