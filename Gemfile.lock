@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/up-for-grabs/tooling.git
-  revision: d933ac38f17f5b2cf2d55d3f7ab44d9eb6802755
+  revision: 7a806580638d9dc0551d6c32e5618aa1b935bf03
   branch: main
   specs:
     up_for_grabs_tooling (0.1.0)
@@ -94,7 +94,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    concurrent-ruby (1.2.0)
+    concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
     docile (1.4.0)
@@ -140,7 +140,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.1)
-    minitest (5.17.0)
+    minitest (5.18.0)
     mocha (2.0.2)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.6.0)
